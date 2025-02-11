@@ -1,8 +1,29 @@
 {% extends 'layout.html' %}
 
-{% block title %}Inicio{% endblock %}
+{% block title %}Inicio - Fiallos Lubricentro{% endblock %}
 
 {% block content %}
-<h1>Bienvenido a la Página de Inicio</h1>
-<p>Esta es la página principal de tu proyecto Django.</p>
+<h1>Bienvenido a Fiallos Lubricentro</h1>
+<div class="sections">
+    <div class="section">
+        <h2>Compras</h2>
+        <p>Administra y controla todas tus compras de suministros y repuestos con facilidad.</p>
+        <a href="{% url 'compras' %}" class="btn">Ir a Compras</a>
+    </div>
+    <div class="section">
+        <h2>Inventario</h2>
+        <p>Gestiona tu inventario de forma eficiente y mantén un seguimiento detallado de tus existencias.</p>
+        <a href="{% url 'inventario' %}" class="btn">Ir a Inventario</a>
+    </div>
+    <div class="section">
+        <h2>Ventas</h2>
+        <p>Realiza y controla todas tus ventas desde una plataforma centralizada y fácil de usar.</p>
+        <a href="{% url 'ventas' %}" class="btn">Ir a Ventas</a>
+    </div>
+    <div class="section">
+        <h2>Servicios</h2>
+        <p>Organiza y supervisa los servicios ofrecidos a tus clientes de manera efectiva.</p>
+        <a href="{% url 'servicios' %}" class="btn">Ir a Servicios</a>
+    </div>
+</div>
 {% endblock %}

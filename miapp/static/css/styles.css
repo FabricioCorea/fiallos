@@ -1,14 +1,32 @@
+h1 {
+    text-align: center;
+}
 body {
     font-family: Arial, sans-serif;
     margin: 0;
     padding: 0;
     background-color: #f4f4f4;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 header {
-    background-color: #333;
-    color: #fff;
-    padding: 1rem 0;
+    background-color: #fff;
+    color: #333;
+    padding: 0.5rem;
+    text-align: center;
+}
+
+header nav {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header .logo {
+    width: 100px; 
+    height: auto;
 }
 
 nav ul {
@@ -17,39 +35,123 @@ nav ul {
     margin: 0;
     display: flex;
     justify-content: center;
+    flex-wrap: wrap;
 }
 
 nav ul li {
-    margin: 0 1rem;
+    margin: 0.5rem 1rem;
 }
 
 nav ul li a {
-    color: #fff;
+    color: #333;
     text-decoration: none;
     padding: 0.5rem 1rem;
     display: block;
     border-radius: 4px;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s, color 0.3s;
 }
 
 nav ul li a:hover {
     background-color: #555;
+    color: #fff;
 }
 
 main {
     padding: 2rem;
     background-color: #fff;
     margin: 2rem auto;
-    max-width: 800px;
+    max-width: 1200px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    flex: 1; /* Se expande para ocupar el espacio disponible */
 }
 
 footer {
     text-align: center;
-    padding: 1rem 0;
-    background-color: #333;
-    color: #fff;
-    position: absolute;
-    bottom: 0;
+    padding: 0.1rem 0;
+    background-color: #fff;
+    color: #333;
     width: 100%;
+}
+
+/* Secciones principales */
+.sections {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 20px;
+    margin-top: 2rem;
+}
+
+/* Tarjetas con diseño 3D */
+.section {
+    background-color: #5b5b5b;
+    color: #fff;
+    border-radius: 12px;
+    padding: 0.5rem;
+    width: 20%;
+    text-align: center;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.section:hover {
+    transform: scale(1.05);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+}
+
+.section h2 {
+    color: #fff;
+}
+
+.section p {
+    color: #ddd;
+}
+
+/* Botón */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    background-color: #28a745; /* Verde */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.btn:hover {
+    background-color: #218838;
+}
+
+/* Responsividad */
+@media (max-width: 1024px) {
+    .section {
+        width: 45%;
+    }
+}
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+    }
+
+    nav ul li {
+        margin: 0.5rem 0;
+    }
+
+    main {
+        margin: 1rem auto;
+    }
+
+    .logo {
+        width: 80px; /* Tamaño más pequeño en pantallas pequeñas */
+    }
+
+    .sections {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .section {
+        width: 90%;
+    }
 }

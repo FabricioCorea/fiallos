@@ -4,11 +4,13 @@ from django.shortcuts import render, HttpResponse
 def index(request):
     return render(request, 'index.html')
 
-def about(request):
-    return render(request, 'about.html')
+def compras(request):
+    return render(request, 'compras.html')
 
-def services(request):
-    return render(request, 'services.html')
+def inventario(request):
+    return render(request, 'inventario.html')
 
-def contact(request):
-    return render(request, 'contact.html')
+def ventas(request):
+    return render(request, 'ventas.html')
+def servicios(request):
+    return render(request, 'servicios.html')

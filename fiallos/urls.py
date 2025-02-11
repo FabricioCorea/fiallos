@@ -21,7 +21,8 @@ from miapp import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('about/', views.about, name='about'),
-    path('services/', views.services, name='services'),
-    path('contact/', views.contact, name='contact'),
+    path('compras/', views.compras, name='compras'),
+    path('inventario/', views.inventario, name='inventario'),
+    path('ventas/', views.ventas, name='ventas'),
+    path('servicios/', views.servicios, name='servicios'),
 ]

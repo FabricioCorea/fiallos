@@ -10,11 +10,13 @@
 <body>
     <header>
         <nav>
+            <img src="{% static 'images/logo.png' %}" alt="Logo de Mi Proyecto Django" class="logo">
             <ul>
                 <li><a href="{% url 'index' %}">Inicio</a></li>
-                <li><a href="{% url 'about' %}">Acerca de</a></li>
-                <li><a href="{% url 'services' %}">Servicios</a></li>
-                <li><a href="{% url 'contact' %}">Contacto</a></li>
+                <li><a href="{% url 'compras' %}">Compras</a></li>
+                <li><a href="{% url 'inventario' %}">Inventario</a></li>
+                <li><a href="{% url 'ventas' %}">Ventas</a></li>
+                <li><a href="{% url 'servicios' %}">Servicios</a></li>
             </ul>
         </nav>
     </header>
@@ -26,7 +28,7 @@
     </main>
     
     <footer>
-        <p>&copy; 2025 Mi Proyecto Django. Todos los derechos reservados.</p>
+        <p>&copy; 2025 Fiallos. Todos los derechos reservados.</p>
     </footer>
 </body>
 </html>
