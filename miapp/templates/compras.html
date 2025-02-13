@@ -1,8 +1,24 @@
 {% extends 'layout.html' %}
 
-{% block title %}Acerca de{% endblock %}
+{% block title %}Compras{% endblock %}
 
 {% block content %}
-<h1>Acerca de Nosotros</h1>
-<p>En esta página puedes proporcionar información sobre tu proyecto o empresa.</p>
+<h1>Gestión de compras</h1>
+<div class="sections">
+    <div class="section">
+        <h2>Entrada de productos</h2>
+        <p>Registre y actualice nuevas entradas de productos en el inventario.</p>
+        <a href="{% url 'entradaProductos' %}" class="btn">Ingresar entradas</a>
+    </div>
+    <div class="section">
+        <h2>Mis productos</h2>
+        <p>Administre sus productos y acceda fácilmente a toda la información de cada uno.</p>
+        <a href="{% url 'productos' %}" class="btn">Productos</a>
+    </div>
+    <div class="section">
+        <h2>Compras realizadas</h2>
+        <p>Vea el detalle de todas las compras realizadas.</p>
+        <a href="{% url 'historialCompras' %}" class="btn">Historial de compras</a>
+    </div>
+</div>
 {% endblock %}
