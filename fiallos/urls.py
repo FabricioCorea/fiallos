@@ -16,18 +16,29 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-#Lo relacionado con mi app ---------------------------------------------------------
 from miapp import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('compras/', views.compras, name='compras'),
-    path('inventario/', views.inventario, name='inventario'),
-    path('ventas/', views.ventas, name='ventas'),
-    path('servicios/', views.servicios, name='servicios'),
-    path('entradas/', views.entradaProductos, name='entradaProductos'),
+    
+    # Módulo de Productos
     path('productos/', views.productos, name='productos'),
+
+    # Módulo de Compras
+    path('compras/', views.compras, name='compras'),
     path('historialCompras/', views.historialCompras, name='historialCompras'),
+
+    # Módulo de Inventario
+    path('inventario/', views.inventario, name='inventario'),
+    path('entradas/', views.entradaProductos, name='entradaProductos'),
+
+    # Módulo de Ventas
+    path('ventas/', views.ventas, name='ventas'),
     path('nuevaVenta/', views.nuevaVenta, name='nuevaVenta'),
     path('facturasVenta/', views.facturasVenta, name='facturasVenta'),
+
+    # Módulo de Servicios
+    path('servicios/', views.servicios, name='servicios'),
 ]
+
+
