@@ -1,17 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
-from miapp.models import Producto, Inventario, Kardex
-
-# Función Auxiliar para Validar Precios
-def validar_precios(precio_compra, precio_venta):
-    try:
-        precio_compra = float(precio_compra)
-        precio_venta = float(precio_venta)
-        if precio_compra <= 0 or precio_venta <= 0:
-            return "Los precios deben ser valores positivos."
-    except ValueError:
-        return "Los precios deben ser números."
-    return None
+from miapp.models import *
 
 # Página de Inicio
 def index(request):
@@ -44,5 +33,57 @@ def facturasVenta(request):
 
 #  Vista para Mostrar Productos
 def productos(request):
-    return render(request, 'productos.html')
+    productos = Producto.objects.all()
+    return render(request, 'productos.html', {'productos': productos})
+# Agregar producto
+def agregarProducto(request):
+    if request.method == "POST":
+        codigo = request.POST.get('codigo')
+        producto = request.POST.get('producto')
+        unidad = request.POST.get('unidad')
+        precioCompra = request.POST.get('precioCompra')
+        precioVenta = request.POST.get('precioVenta')
+        #imagen = request.FILES.get('imagen')  # Para manejar imágenes
+        estado = request.POST.get('estado')
+
+        if codigo and producto and unidad and precioCompra and precioVenta and estado:
+            nuevoProducto = Producto(
+                codigo=codigo,
+                producto=producto,
+                unidad=unidad,
+                precioCompra=precioCompra,
+                precioVenta=precioVenta,
+                #imagen=imagen,  
+                estado=estado
+            )
+            nuevoProducto.save()
+            messages.success(request, "Producto agregado con éxito.")
+        else:
+            messages.warning(request, "Hay campos obligatorios vacíos.")
+    return redirect('productos') 
+# Editar producto
+def editarProducto(request, id):
+    EditarProducto = Producto.objects.get(id=id)
+    if request.method == "POST":
+        codigo = request.POST.get('codigo')
+        producto = request.POST.get('producto')
+        unidad = request.POST.get('unidad')
+        precioCompra = request.POST.get('precioCompra')
+        precioVenta = request.POST.get('precioVenta')
+        #imagen = request.FILES.get('imagen')  # Para manejar imágenes
+        estado = request.POST.get('estado')
+
+        if codigo and producto and unidad and precioCompra and precioVenta and estado:
+            codigo=EditarProducto.codigo,
+            producto=EditarProducto.producto,
+            unidad=EditarProducto.unidad,
+            precioCompra=EditarProducto.precioCompra,
+            precioVenta=EditarProducto.precioVenta,
+            #imagen=imagen,  
+            estado=EditarProducto.estado
+            EditarProducto.save()
+            messages.success(request, "Producto actualizado con éxito.")
+        else:
+            messages.warning(request, "Hay campos obligatorios vacíos.")
+    return redirect('productos') 
 

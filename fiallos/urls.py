@@ -23,6 +23,8 @@ urlpatterns = [
     
     # Módulo de Productos
     path('productos/', views.productos, name='productos'),
+    path('nuevoProducto/', views.agregarProducto, name='agregarProducto'),
+    path('editarProducto/', views.editarProducto, name='editarProducto'),
 
     # Módulo de Compras
     path('compras/', views.compras, name='compras'),

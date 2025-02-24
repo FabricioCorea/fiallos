@@ -1,6 +1,6 @@
 from django.db import models
 
-# 📦 Modelo Producto
+# Modelo Producto
 class Producto(models.Model):
     codigo = models.CharField(max_length=50, unique=True)
     producto = models.CharField(max_length=100)
@@ -15,7 +15,7 @@ class Producto(models.Model):
     def __str__(self):
         return self.producto
 
-# 🏢 Modelo Proveedor
+# Modelo Proveedor
 class Proveedor(models.Model):
     nombre = models.CharField(max_length=250)
     rtn = models.CharField(max_length=20, unique=True)
@@ -28,7 +28,7 @@ class Proveedor(models.Model):
     def __str__(self):
         return self.nombre
 
-# 🛒 Modelo Compra
+# Modelo Compra
 class Compra(models.Model):
     proveedor = models.ForeignKey(Proveedor, on_delete=models.CASCADE)
     fecha_compra = models.DateField(auto_now_add=True)  
@@ -38,7 +38,7 @@ class Compra(models.Model):
     def __str__(self):
         return f"Compra {self.id} - {self.proveedor.nombre} - {self.fecha_compra}"
 
-# 📑 Modelo DetalleCompra
+# Modelo DetalleCompra
 class DetalleCompra(models.Model):
     compra = models.ForeignKey(Compra, on_delete=models.CASCADE)
     producto = models.ForeignKey(Producto, on_delete=models.CASCADE)
@@ -53,7 +53,7 @@ class DetalleCompra(models.Model):
     def __str__(self):
         return f"{self.cantidad} x {self.producto.producto} - Compra {self.compra.id}"
 
-# 📦 Modelo Inventario (Stock por Producto)
+# Modelo Inventario (Stock por Producto)
 class Inventario(models.Model):
     producto = models.OneToOneField(Producto, on_delete=models.CASCADE)
     cantidad_actual = models.IntegerField(default=0)  # Permitir stock negativo si hay errores en Kardex
@@ -68,7 +68,7 @@ class Inventario(models.Model):
         self.cantidad_actual = entradas - salidas
         self.save()
 
-# 📊 Modelo Kardex (Movimientos de Inventario)
+# Modelo Kardex (Movimientos de Inventario)
 class Kardex(models.Model):
     TIPO_MOVIMIENTO_CHOICES = [
         ('entrada', 'Entrada'),

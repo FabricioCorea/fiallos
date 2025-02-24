@@ -3,6 +3,136 @@
 {% block title %}Productos{% endblock %}
 
 {% block content %}
-<h1>Gestión de compras</h1>
-<p>Aquí se mostrará la lista de productos con las acciones.</p>
+
+<h1>Gestión de Productos</h1>
+
+<!-- Buscador y botón de agregar -->
+<div>
+    <input type="text" id="buscar" placeholder="Buscar producto...">
+    <button onclick="abrirModal()">Agregar Producto</button>
+</div>
+
+<!-- Modal para Agregar Producto -->
+<div id="modalAgregar" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div style="background: white; padding: 20px; width: 400px; margin: 100px auto; border-radius: 8px;">
+        <h2>Agregar Producto</h2>
+        <form id="formAgregarProducto" method="POST" action="{% url 'agregarProducto' %}" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label for="codigo">Código:</label>
+            <input type="text" name="codigo" required><br><br>
+            
+            <label for="producto">Producto:</label>
+            <input type="text" name="producto" required><br><br>
+
+            <label for="unidad">Unidad:</label>
+            <input type="text" name="unidad" required><br><br>
+
+            <label for="precioCompra">Precio Compra (Lps):</label>
+            <input type="number" name="precioCompra" step="0.01" required><br><br>
+
+            <label for="precioVenta">Precio Venta (Lps):</label>
+            <input type="number" name="precioVenta" step="0.01" required><br><br>
+
+            {% comment %} <label for="imagen">Imagen:</label>
+            <input type="file" name="imagen"><br><br> {% endcomment %}
+
+            <label for="estado">Estado:</label>
+            <select name="estado" required>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select><br><br>
+
+            <button type="submit">Guardar</button>
+            <button type="button" onclick="cerrarModal()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Tabla de productos -->
+<table border="1">
+    <thead>
+        <tr>
+            <th>Código</th>
+            <th>Producto</th>
+            <th>Unidad</th>
+            <th>Precio Compra</th>
+            <th>Precio Venta</th>
+            {% comment %} <th>Imagen</th> {% endcomment %}
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody id="tablaProductos">
+        {% for producto in productos %}
+        <tr>
+            <td>{{ producto.codigo }}</td>
+            <td>{{ producto.producto }}</td>
+            <td>{{ producto.unidad }}</td>
+            <td>{{ producto.precioCompra }}</td>
+            <td>{{ producto.precioVenta }}</td>
+            {% comment %} <td>
+                {% if producto.imagen %}
+                    <img src="{{ producto.imagen.url }}" width="50">
+                {% else %}
+                    Sin imagen
+                {% endif %}
+            </td> {% endcomment %}
+            <td>{{ producto.estado }}</td>
+            <td>
+                {% comment %} <a href="{% url 'editar_producto' producto.codigo %}">
+                    <button>Editar</button>
+                </a>
+                <form action="{% url 'eliminar_producto' producto.codigo %}" method="post" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar {{ producto.producto }}?');">Eliminar</button>
+                </form> {% endcomment %}
+            </td>
+        </tr>
+        {% empty %}
+        <tr>
+            <td colspan="8">No hay productos registrados.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Bloque de mensajes con SweetAlert -->
+{% if messages %}
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        {% for m in messages %}
+            Swal.fire({
+                title: "{% if m.tags == 'success' %} ¡Éxito! {% elif m.tags == 'error' %} Error {% elif m.tags == 'warning' %} Advertencia {% elif m.tags == 'info' %} Información {% else %} Mensaje {% endif %}",
+                text: "{{ m }}",
+                icon: "{{ m.tags }}",
+                confirmButtonColor: "#18314F",
+                focusConfirm: false
+            });
+        {% endfor %}
+    </script>
+{% endif %}
+
+<script>
+    document.getElementById("buscar").addEventListener("input", function () {
+        let filtro = this.value.toLowerCase();
+        let filas = document.querySelectorAll("#tablaProductos tr");
+        
+        filas.forEach(fila => {
+            let codigo = fila.cells[0]?.textContent.toLowerCase();
+            let producto = fila.cells[1]?.textContent.toLowerCase();
+            
+            fila.style.display = (codigo.includes(filtro) || producto.includes(filtro)) ? "" : "none";
+        });
+    });
+
+    function abrirModal() {
+        document.getElementById("modalAgregar").style.display = "block";
+    }
+
+    function cerrarModal() {
+        document.getElementById("modalAgregar").style.display = "none";
+    }
+</script>
+
 {% endblock %}
