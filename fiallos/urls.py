@@ -24,7 +24,8 @@ urlpatterns = [
     # Módulo de Productos
     path('productos/', views.productos, name='productos'),
     path('nuevoProducto/', views.agregarProducto, name='agregarProducto'),
-    path('editarProducto/', views.editarProducto, name='editarProducto'),
+    path('editarProducto/<int:id>/', views.editarProducto, name='editarProducto'),
+    path('eliminarProducto/<int:id>/', views.eliminarProducto, name='eliminarProducto'),
 
     # Módulo de Compras
     path('compras/', views.compras, name='compras'),

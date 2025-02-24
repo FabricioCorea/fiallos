@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from miapp.models import *
+from django.db import IntegrityError
 
 # Página de Inicio
 def index(request):
@@ -63,27 +64,42 @@ def agregarProducto(request):
     return redirect('productos') 
 # Editar producto
 def editarProducto(request, id):
-    EditarProducto = Producto.objects.get(id=id)
+    #EditarProducto = Producto.objects.get(id=id)
+    producto = get_object_or_404(Producto, id=id)  # Manejo seguro con `get_object_or_404`
+
     if request.method == "POST":
-        codigo = request.POST.get('codigo')
-        producto = request.POST.get('producto')
+        producto_nombre = request.POST.get('producto')
         unidad = request.POST.get('unidad')
         precioCompra = request.POST.get('precioCompra')
         precioVenta = request.POST.get('precioVenta')
-        #imagen = request.FILES.get('imagen')  # Para manejar imágenes
         estado = request.POST.get('estado')
 
-        if codigo and producto and unidad and precioCompra and precioVenta and estado:
-            codigo=EditarProducto.codigo,
-            producto=EditarProducto.producto,
-            unidad=EditarProducto.unidad,
-            precioCompra=EditarProducto.precioCompra,
-            precioVenta=EditarProducto.precioVenta,
-            #imagen=imagen,  
-            estado=EditarProducto.estado
-            EditarProducto.save()
+        # Verificación de campos obligatorios (excluyendo `codigo`, que no cambia)
+        if producto_nombre and unidad and precioCompra and precioVenta and estado:
+            producto.producto = producto_nombre
+            producto.unidad = unidad
+            producto.precioCompra = precioCompra
+            producto.precioVenta = precioVenta
+            producto.estado = estado
+            producto.save()
             messages.success(request, "Producto actualizado con éxito.")
         else:
             messages.warning(request, "Hay campos obligatorios vacíos.")
-    return redirect('productos') 
 
+    return redirect('productos')
+# Eliminar producto
+def eliminarProducto(request, id):
+    producto = get_object_or_404(Producto, id=id)
+    producto.delete()
+    messages.success(request, "Producto eliminado correctamente.")
+    return redirect('productos')
+
+def eliminarProducto(request, id):
+    try:
+        producto = Producto.objects.get(id=id)
+        producto.delete()  # Eliminar el registro de la base de datos
+        messages.success(request, "Registro eliminado con éxito.")
+    except Producto.DoesNotExist:
+        messages.error(request, "El registro no existe.")
+    
+    return redirect('productos')  # Redirigir después de eliminar

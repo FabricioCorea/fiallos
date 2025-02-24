@@ -9,7 +9,7 @@
 <!-- Buscador y botón de agregar -->
 <div>
     <input type="text" id="buscar" placeholder="Buscar producto...">
-    <button onclick="abrirModal()">Agregar Producto</button>
+    <button onclick="abrirModalAgregar()">Agregar Producto</button>
 </div>
 
 <!-- Modal para Agregar Producto -->
@@ -34,9 +34,6 @@
             <label for="precioVenta">Precio Venta (Lps):</label>
             <input type="number" name="precioVenta" step="0.01" required><br><br>
 
-            {% comment %} <label for="imagen">Imagen:</label>
-            <input type="file" name="imagen"><br><br> {% endcomment %}
-
             <label for="estado">Estado:</label>
             <select name="estado" required>
                 <option value="activo">Activo</option>
@@ -44,7 +41,42 @@
             </select><br><br>
 
             <button type="submit">Guardar</button>
-            <button type="button" onclick="cerrarModal()">Cancelar</button>
+            <button type="button" onclick="cerrarModalAgregar()">Cancelar</button>
+        </form>
+    </div>
+</div>
+
+<!-- Modal para Editar Producto -->
+<div id="modalEditar" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5);">
+    <div style="background: white; padding: 20px; width: 400px; margin: 100px auto; border-radius: 8px;">
+        <h2>Editar Producto</h2>
+        <form id="formEditarProducto" method="POST">
+            {% csrf_token %}
+
+            <!-- Campo visible pero deshabilitado -->
+            <label for="editCodigo">Código:</label>
+            <input type="text" id="editCodigo" name="codigo" disabled><br><br>
+
+            <label for="editProducto">Producto:</label>
+            <input type="text" id="editProducto" name="producto" required><br><br>
+
+            <label for="editUnidad">Unidad:</label>
+            <input type="text" id="editUnidad" name="unidad" required><br><br>
+
+            <label for="editPrecioCompra">Precio Compra (Lps):</label>
+            <input type="number" id="editPrecioCompra" name="precioCompra" step="0.01" required><br><br>
+
+            <label for="editPrecioVenta">Precio Venta (Lps):</label>
+            <input type="number" id="editPrecioVenta" name="precioVenta" step="0.01" required><br><br>
+
+            <label for="editEstado">Estado:</label>
+            <select id="editEstado" name="estado" required>
+                <option value="activo">Activo</option>
+                <option value="inactivo">Inactivo</option>
+            </select><br><br>
+
+            <button type="submit">Actualizar</button>
+            <button type="button" onclick="cerrarModalEditar()">Cancelar</button>
         </form>
     </div>
 </div>
@@ -58,7 +90,6 @@
             <th>Unidad</th>
             <th>Precio Compra</th>
             <th>Precio Venta</th>
-            {% comment %} <th>Imagen</th> {% endcomment %}
             <th>Estado</th>
             <th>Acciones</th>
         </tr>
@@ -71,41 +102,28 @@
             <td>{{ producto.unidad }}</td>
             <td>{{ producto.precioCompra }}</td>
             <td>{{ producto.precioVenta }}</td>
-            {% comment %} <td>
-                {% if producto.imagen %}
-                    <img src="{{ producto.imagen.url }}" width="50">
-                {% else %}
-                    Sin imagen
-                {% endif %}
-            </td> {% endcomment %}
             <td>{{ producto.estado }}</td>
             <td>
-                {% comment %} <a href="{% url 'editar_producto' producto.codigo %}">
-                    <button>Editar</button>
-                </a>
-                <form action="{% url 'eliminar_producto' producto.codigo %}" method="post" style="display:inline;">
-                    {% csrf_token %}
-                    <button type="submit" onclick="return confirm('¿Estás seguro de eliminar {{ producto.producto }}?');">Eliminar</button>
-                </form> {% endcomment %}
+                <button onclick="abrirModalEditar('{{ producto.id }}', '{{ producto.codigo }}', '{{ producto.producto }}', '{{ producto.unidad }}', '{{ producto.precioCompra }}', '{{ producto.precioVenta }}', '{{ producto.estado }}')">Editar</button>
+                <button onclick="confirmarEliminar('{{ producto.id }}')">Eliminar</button>
             </td>
         </tr>
         {% empty %}
         <tr>
-            <td colspan="8">No hay productos registrados.</td>
+            <td colspan="7">No hay productos registrados.</td>
         </tr>
         {% endfor %}
     </tbody>
 </table>
-
-<!-- Bloque de mensajes con SweetAlert -->
+<!-- Mostrar mensajes de éxito o error -->
 {% if messages %}
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        {% for m in messages %}
+        {% for message in messages %}
             Swal.fire({
-                title: "{% if m.tags == 'success' %} ¡Éxito! {% elif m.tags == 'error' %} Error {% elif m.tags == 'warning' %} Advertencia {% elif m.tags == 'info' %} Información {% else %} Mensaje {% endif %}",
-                text: "{{ m }}",
-                icon: "{{ m.tags }}",
+                title: "{% if message.tags == 'success' %} ¡Éxito! {% elif message.tags == 'error' %} Error {% elif message.tags == 'warning' %} Advertencia {% else %} Mensaje {% endif %}",
+                text: "{{ message }}",
+                icon: "{{ message.tags }}",
                 confirmButtonColor: "#18314F",
                 focusConfirm: false
             });
@@ -125,13 +143,59 @@
             fila.style.display = (codigo.includes(filtro) || producto.includes(filtro)) ? "" : "none";
         });
     });
-
-    function abrirModal() {
+    function abrirModalAgregar() {
         document.getElementById("modalAgregar").style.display = "block";
     }
 
-    function cerrarModal() {
+    function cerrarModalAgregar() {
         document.getElementById("modalAgregar").style.display = "none";
+    }
+
+    function abrirModalEditar(id, codigo, producto, unidad, precioCompra, precioVenta, estado) {
+        // Mostrar el código pero deshabilitado
+        document.getElementById("editCodigo").value = codigo;
+    
+        // Agregar un campo oculto para enviarlo en el formulario
+        let form = document.getElementById("formEditarProducto");
+        let hiddenCodigo = document.createElement("input");
+        hiddenCodigo.type = "hidden";
+        hiddenCodigo.name = "codigo";
+        hiddenCodigo.value = codigo;
+        form.appendChild(hiddenCodigo);
+    
+        document.getElementById("editProducto").value = producto;
+        document.getElementById("editUnidad").value = unidad;
+        document.getElementById("editPrecioCompra").value = precioCompra;
+        document.getElementById("editPrecioVenta").value = precioVenta;
+        document.getElementById("editEstado").value = estado;
+    
+        // Asignar la URL correcta con el ID del producto
+        document.getElementById("formEditarProducto").action = `/editarProducto/${id}/`;
+
+        // Mostrar el modal de edición
+        document.getElementById("modalEditar").style.display = "block";
+    }
+    
+    function cerrarModalEditar() {
+        document.getElementById("modalEditar").style.display = "none";
+    }    
+
+    function confirmarEliminar(id) {
+        Swal.fire({
+            title: "¿Estás seguro?",
+            text: "Esta acción no se puede deshacer.",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Sí, eliminar",
+            cancelButtonText: "Cancelar"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Redirigir directamente a la URL de eliminación con el `id`
+                window.location.href = `/eliminarProducto/${id}/`;
+            }
+        });
     }
 </script>
 
